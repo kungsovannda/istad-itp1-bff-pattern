@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: bff-auth-server
+  datasource:
+    password: post
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/db_auth
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+logging:
+  level:
+    org.springframework.security: debug
+server:
+  port: 9000
+  servlet:
+    session:
+      tracking-modes: cookie
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id:${server.port}}}
+
