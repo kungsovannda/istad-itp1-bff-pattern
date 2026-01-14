@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: bff-gateway
+  security:
+    oauth2:
+      client:
+        registration:
+          auth:
+            authorization-grant-type: authorization_code
+            client-id: bff-client
+            client-secret: secret
+            client-authentication-method: client_secret_basic
+            provider: auth-server
+            client-name: BFF Client
+            redirect-uri: "{baseUrl}/login/oauth2/code/auth"
+            scope:
+              - openid
+
+        provider:
+          auth-server:
+            issuer-uri: http://localhost:9000
+            authorization-uri: http://localhost:9000/oauth2/authorize
+            token-uri: http://localhost:9000/oauth2/token
+            user-name-attribute: sub
