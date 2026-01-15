@@ -15,6 +15,10 @@ public class GatewayConfig {
                         .path("/api/v1/products")
                         .uri("http://localhost:8081")
                 )
+                .route("me-route", r->r
+                        .path("/api/v1/me")
+                        .uri("no://op")
+                )
                 .route("next", r -> r
                         .path("/**")
                         .filters(s -> s.stripPrefix(0))
@@ -25,10 +29,7 @@ public class GatewayConfig {
                         .filters(s -> s.stripPrefix(0))
                         .uri("http://localhost:3000")
                 )
-                .route("me-route", r->r
-                        .path("/api/v1/me")
-                        .uri("no://op")
-                )
+
 
                 .build();
     }
