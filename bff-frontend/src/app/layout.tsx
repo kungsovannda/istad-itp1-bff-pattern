@@ -1,5 +1,5 @@
 import NavBarComponent from "@/components/header/NavBarComponent";
-import StoreProvider from "@/lib/Provider";
+import StoreProvider from "@/lib/provider";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import { Suspense } from "react";

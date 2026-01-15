@@ -3,7 +3,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { removeFromCart, updateQuantity } from "@/lib/features/cartSlice";
+import { removeFromCart, updateQuantity } from "@/features/cart/cartSlice";
 
 type CartItem = {
   id: string;

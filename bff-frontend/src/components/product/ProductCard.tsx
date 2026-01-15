@@ -1,7 +1,7 @@
 "use client";
-import { addToCart } from "@/lib/features/cartSlice";
+import { addToCart } from "@/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { Product } from "@/types/productType";
+import { Product } from "@/types/product";
 import { ShoppingCart } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";

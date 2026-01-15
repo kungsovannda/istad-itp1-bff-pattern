@@ -1,12 +1,12 @@
 "use client";
 import ProductCard from "@/components/product/ProductCard";
-import { Product } from "@/types/productType";
+import { Product } from "@/types/product";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import Loading from "../loading";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductNotFound from "@/components/not-found/ProductNotFound";
-import { useGetProductsQuery } from "@/lib/api/productApi";
+import { useGetProductsQuery } from "@/features/product/productApi";
 
 export default function ProductPage() {
   const [category, setCategory] = useState<Dropdown>();

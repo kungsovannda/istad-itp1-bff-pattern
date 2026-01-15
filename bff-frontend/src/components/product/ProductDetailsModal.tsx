@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Product } from "@/types/productType";
+import { Product } from "@/types/product";
 import Image from "next/image";
 
 interface ProductDetailsModalProps {

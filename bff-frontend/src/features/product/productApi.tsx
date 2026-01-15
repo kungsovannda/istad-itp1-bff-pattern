@@ -1,7 +1,6 @@
 import { baseQuery } from "@/services/base-query";
-import { Product } from "@/types/productType";
+import { Product } from "@/types/product";
 import { createApi } from "@reduxjs/toolkit/query/react";
-
 
 type CreateProductType = {
   name: string;
@@ -18,7 +17,7 @@ export const productApi = createApi({
   endpoints: (builder) => ({
     getProducts: builder.query<Product[], void>({
       query: () => "products",
-      providesTags: ["Product"]
+      providesTags: ["Product"],
     }),
     addProduct: builder.mutation<Product, CreateProductType>({
       query: (body) => ({
