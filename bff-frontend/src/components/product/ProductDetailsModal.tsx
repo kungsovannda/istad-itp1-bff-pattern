@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -29,19 +30,23 @@ export default function ProductDetailsModal({
           <DialogTitle>{toggleProduct?.name}</DialogTitle>
         </DialogHeader>
 
-        <div className="p-4 md:p-5 space-y-4">
-          <Image
-            width={200}
-            height={200}
-            unoptimized
-            className="w-2/3 object-contain mx-auto"
-            src={toggleProduct?.image || ""}
-            alt={toggleProduct?.name || ""}
-          />
-          <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        <div className="h-80 rounded-xl overflow-hidden">
+          <figure className="w-full h-full">
+            <Image
+              width={200}
+              height={200}
+              unoptimized
+              className="h-full w-full object-cover mx-auto"
+              src={toggleProduct?.image || ""}
+              alt={toggleProduct?.name || ""}
+            />
+          </figure>
+        </div>
+        <DialogFooter className="flex justify-start">
+          <p className="leading-relaxed text-gray-500 dark:text-gray-400">
             {toggleProduct?.description}
           </p>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -2,11 +2,12 @@
 import { addToCart } from "@/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { Product } from "@/types/product";
-import { ShoppingCart } from "lucide-react";
+import { Eye, ShoppingCart } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
+import ProductDetailsModal from "./ProductDetailsModal";
 
 type Props = {
   index?: number;
@@ -15,6 +16,7 @@ type Props = {
 
 export default function ProductCard({ index = 0, product }: Props) {
   const dispatch = useAppDispatch();
+  const [isOpenProduct, setIsOpenProduct] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -74,8 +76,21 @@ export default function ProductCard({ index = 0, product }: Props) {
           >
             <ShoppingCart size={16} />
           </button>
+          <button
+            onClick={() => setIsOpenProduct(true)}
+            className="bg-gray-200 text-gray-900 p-2 rounded-md hover:bg-opacity-80"
+          >
+            <Eye size={16} />
+          </button>
         </div>
       </div>
+      {isOpenProduct && (
+        <ProductDetailsModal
+          isOpen={isOpenProduct}
+          setIsOpen={setIsOpenProduct}
+          toggleProduct={product}
+        />
+      )}
     </motion.div>
   );
 }
