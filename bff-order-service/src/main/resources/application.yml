@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: bff-order-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000
+  datasource:
+    url: jdbc:postgresql://localhost:5433/db_order
+    username: postgres
+    password: post
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+server:
+  port: 8082
