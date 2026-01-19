@@ -21,6 +21,7 @@ public class SecurityConfig {
                         .pathMatchers("/").permitAll()
                         .pathMatchers("/_next/**").permitAll()
                         .pathMatchers("/api/v1/me").authenticated()
+                        .pathMatchers("/api/v1/products/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .oauth2Login(Customizer.withDefaults())
