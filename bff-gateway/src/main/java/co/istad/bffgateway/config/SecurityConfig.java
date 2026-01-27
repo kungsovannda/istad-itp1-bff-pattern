@@ -17,12 +17,11 @@ public class SecurityConfig {
 
         return http
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/login").permitAll()
-                        .pathMatchers("/").permitAll()
-                        .pathMatchers("/_next/**").permitAll()
-                        .pathMatchers("/api/v1/me").authenticated()
-                        .pathMatchers("/api/v1/products/**").permitAll()
-                        .anyExchange().authenticated()
+                        .pathMatchers(
+                                "/api/v1/me",
+                                "/api/v1/orders"
+                        ).authenticated()
+                        .anyExchange().permitAll()
                 )
                 .oauth2Login(Customizer.withDefaults())
                 .logout(logout -> logout.logoutUrl("/logout"))
