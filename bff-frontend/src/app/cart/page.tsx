@@ -6,6 +6,16 @@ import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+type OrderItemRequest = {
+  productUuid: string;
+  price: number;
+  quantity: number;
+}
+
+type OrderRequest = {
+  items: OrderItemRequest[]
+}
+
 export default function CartPage() {
   const { items } = useAppSelector((state) => state.cart);
 
@@ -21,6 +31,38 @@ export default function CartPage() {
         Your cart is empty
       </div>
     );
+  }
+
+  const handleCheckoutOnClick = async () => {
+  //   Prepare order
+    const orderItems: OrderRequest = {
+      items: []
+    } ;
+    items.forEach(item => {
+      orderItems.items.push({
+        productUuid: item.id,
+        price: item.price,
+        quantity: item.quantity
+      })
+    })
+
+  //   Submit order
+    try{
+      const response = await fetch("api/v1/orders", {
+        method: "POST",
+        credentials: "include"
+      });
+
+      if(!response.ok){
+        return;
+      }
+
+      const data = await response.json();
+      console.log(data);
+
+    }catch (e) {
+      throw e;
+    }
   }
 
   return (
@@ -81,7 +123,7 @@ export default function CartPage() {
               </p>
             )}
 
-            <Button className="w-full" size="lg">
+            <Button onClick={handleCheckoutOnClick} className="w-full" size="lg">
               Proceed to Checkout
             </Button>
 
