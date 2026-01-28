@@ -13,7 +13,11 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http){
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
+
+        RedirectServerLogoutSuccessHandler logoutSuccessHandler =
+                new RedirectServerLogoutSuccessHandler();
+        logoutSuccessHandler.setLogoutSuccessUrl(URI.create("/"));
 
         return http
                 .authorizeExchange(exchange -> exchange
