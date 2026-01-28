@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(
                                 "/api/v1/me",
-                                "/api/v1/orders"
+                                "cart"
                         ).authenticated()
                         .anyExchange().permitAll()
                 )
