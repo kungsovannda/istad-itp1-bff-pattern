@@ -23,6 +23,10 @@ public class SecurityConfig {
                         ).authenticated()
                         .anyExchange().permitAll()
                 )
+                .logout(logoutSpec -> logoutSpec.logoutUrl("/logout"))
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .oauth2Login(Customizer.withDefaults())
                 .logout(logout -> logout.logoutUrl("/logout"))
                 .exceptionHandling(exceptionHandling -> exceptionHandling
