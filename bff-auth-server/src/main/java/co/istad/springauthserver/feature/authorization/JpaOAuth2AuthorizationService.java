@@ -32,7 +32,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
     private final RegisteredClientRepository registeredClientRepository;
     private final ObjectMapper objectMapper;
 
-    public JpaOAuth2AuthorizationService(AuthorizationRepository authorizationRepository, RegisteredClientRepository registeredClientRepository,@Qualifier("securityObjectMapper") ObjectMapper objectMapper) {
+    public JpaOAuth2AuthorizationService(AuthorizationRepository authorizationRepository, RegisteredClientRepository registeredClientRepository, @Qualifier("securityObjectMapper") ObjectMapper objectMapper) {
         this.authorizationRepository = authorizationRepository;
         this.registeredClientRepository = registeredClientRepository;
         this.objectMapper = objectMapper;
