@@ -9,6 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:9000
 logging:
   level:
     org.springframework.security: debug
