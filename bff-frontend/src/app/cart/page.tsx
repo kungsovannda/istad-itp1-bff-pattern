@@ -1,24 +1,37 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import ProductCartItem from "@/components/product/ProductCartItem";
-import { useAppSelector } from "@/lib/hooks";
-import React from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { removeFromCart } from "@/features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type OrderItemRequest = {
   productUuid: string;
   price: number;
   quantity: number;
-}
+};
 
 type OrderRequest = {
-  items: OrderItemRequest[]
-}
+  items: OrderItemRequest[];
+};
 
 export default function CartPage() {
+  const router = useRouter();
   const { items } = useAppSelector((state) => state.cart);
-
+  const dispatch = useAppDispatch();
+  const [isOrderLoading, setIsOrderLoading] = useState(false);
+  const [orderState, setOrderState] = useState<string>(
+    "We are preparing your order...",
+  );
   const { total, itemCount } = useAppSelector((state) => state.cart);
 
   const shipping = total > 50 ? 0 : 9.99;
@@ -34,37 +47,54 @@ export default function CartPage() {
   }
 
   const handleCheckoutOnClick = async () => {
-  //   Prepare order
+    //   Prepare order
+    setIsOrderLoading(true);
     const orderItems: OrderRequest = {
-      items: []
-    } ;
-    items.forEach(item => {
+      items: [],
+    };
+    items.forEach((item) => {
       orderItems.items.push({
         productUuid: item.id,
         price: item.price,
-        quantity: item.quantity
-      })
-    })
+        quantity: item.quantity,
+      });
+    });
 
-  //   Submit order
-    try{
+    //   Submit order
+    try {
+      setOrderState("We are creating your order...");
       const response = await fetch("api/v1/orders", {
+        headers: {
+          "Content-Type": "application/json",
+        },
         method: "POST",
-        credentials: "include"
+        credentials: "include",
+        body: JSON.stringify(orderItems),
       });
 
-      if(!response.ok){
+      if (!response.ok) {
+        setOrderState("Failed to create order. Please try again.");
         return;
       }
 
       const data = await response.json();
       console.log(data);
-
-    }catch (e) {
+      setOrderState("Your order created successfully!");
+    } catch (e) {
       throw e;
+    } finally {
+      const sleep = (ms: number) =>
+        new Promise((resolve) => setTimeout(resolve, ms));
+      await sleep(3000);
+      setIsOrderLoading(false);
+      // Clear ordered products
+      items.forEach((item) => {
+        dispatch(removeFromCart({ id: item.id }));
+      });
+      // Redirect to profile orders page
+      router.push("/profile");
     }
-  }
-
+  };
   return (
     <main className=" pt-24 px-5 md:px-20 min-h-screen h-fit">
       <div className="flex flex-col mb-4">
@@ -123,7 +153,11 @@ export default function CartPage() {
               </p>
             )}
 
-            <Button onClick={handleCheckoutOnClick} className="w-full" size="lg">
+            <Button
+              onClick={handleCheckoutOnClick}
+              className="w-full"
+              size="lg"
+            >
               Proceed to Checkout
             </Button>
 
@@ -135,6 +169,25 @@ export default function CartPage() {
           </CardContent>
         </Card>
       </div>
+
+      {isOrderLoading && (
+        <Dialog onOpenChange={setIsOrderLoading} open={isOrderLoading}>
+          <DialogContent
+            onInteractOutside={(e) => e.preventDefault()}
+            showCloseButton={false}
+          >
+            <DialogHeader>
+              <DialogTitle>Processing your order</DialogTitle>
+            </DialogHeader>
+            <ul className="border-l-2 border-green-200 border-rounded-full pl-4 py-4 space-y-2">
+              <li className="flex space-x-4 items-center">
+                <span className="h-2 w-2 outline-4 outline-green-200 bg-linear-30 from-green-300 to-blue-500 animate-spin  block rounded-full bg-green-400"></span>
+                <span>{orderState}</span>
+              </li>
+            </ul>
+          </DialogContent>
+        </Dialog>
+      )}
     </main>
   );
 }
