@@ -22,9 +22,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.*;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -92,7 +95,10 @@ public class AuthServerSecurity {
 
         http
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/register").permitAll()
+                        .requestMatchers(
+                                "/register",
+                                "/oauth2/**"
+                        ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/clients").permitAll()
                         .requestMatchers(HttpMethod.GET, "/login", "/css/**", "/js/**", "/images/**").permitAll()
@@ -143,7 +149,9 @@ public class AuthServerSecurity {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings() {
-        return AuthorizationServerSettings.builder().build();
+        return AuthorizationServerSettings.builder()
+                .issuer("http://localhost:9000")
+                .build();
     }
 
     @Bean
@@ -154,26 +162,21 @@ public class AuthServerSecurity {
     }
 
     @Bean
-    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer(UserRepository userRepository) {
+    public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
-            if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())
-                    || "id_token".equals(context.getTokenType().getValue())) { // adjust for your Spring version
-                var principal = context.getPrincipal();
-                String username = principal.getName();
-                if (username == null) return;
+            if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) { // adjust for your Spring version
+                Authentication principle = context.getPrincipal();
 
-                User user = userRepository.findByUsername(username).orElseThrow(
-                        () -> new UsernameNotFoundException("User not found")
-                );
-
-                context.getClaims().claims(claims -> {
-                    claims.put("email", user.getEmail());
-                    claims.put("family_name", user.getFamilyName());
-                    claims.put("given_name", user.getGivenName());
-                    claims.put("uuid", user.getUuid());
-                    claims.put("username", user.getUsername());
-                    claims.put("roles", user.getRoles().stream().map(Role::getRole).collect(Collectors.toList()));
-                });
+                if(principle.getPrincipal() instanceof CustomUserDetails user){
+                    context.getClaims().claims(claims -> {
+                        claims.put("email", user.getEmail());
+                        claims.put("family_name", user.getFamilyName());
+                        claims.put("given_name", user.getGivenName());
+                        claims.put("uuid", user.getUuid());
+                        claims.put("username", user.getUsername());
+                        claims.put("roles", user.getRoles());
+                    });
+                }
             }
         };
     }
