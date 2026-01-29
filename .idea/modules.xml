@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/bff-application.iml" filepath="$PROJECT_DIR$/.idea/bff-application.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/bff-auth-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bff-auth-server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bff-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bff-gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/bff-order-service/bff-order-service.iml" filepath="$PROJECT_DIR$/bff-order-service/bff-order-service.iml" />
     </modules>
   </component>
