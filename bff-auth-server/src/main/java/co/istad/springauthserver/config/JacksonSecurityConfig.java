@@ -20,20 +20,13 @@ public class JacksonSecurityConfig {
     @Bean(name = "securityObjectMapper")
     public ObjectMapper objectMapper() {
         ClassLoader classLoader = JacksonSecurityConfig.class.getClassLoader();
+        BasicPolymorphicTypeValidator.Builder builder = BasicPolymorphicTypeValidator.builder()
+                .allowIfSubType(CustomUserDetails.class);
 
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType("co.istad.springauthserver.security")
-                .build();
-
-        SimpleModule customModule = new SimpleModule();
-        customModule.addAbstractTypeMapping(UserDetails.class, CustomUserDetails.class);
 
         return JsonMapper.builder()
-                .activateDefaultTyping(ptv, DefaultTyping.NON_FINAL)
-                .findAndAddModules()
-                .addModules(SecurityJacksonModules.getModules(classLoader))
+                .addModules(SecurityJacksonModules.getModules(classLoader, builder))
                 .addModule(new OAuth2AuthorizationServerJacksonModule())
-                .addModule(customModule) // <-- critical
                 .build();
     }
 
