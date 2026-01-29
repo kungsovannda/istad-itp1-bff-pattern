@@ -2,11 +2,13 @@ package co.istad.bffgateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.logout.RedirectServerLogoutSuccessHandler;
+
+import java.net.URI;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -23,7 +25,8 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(
                                 "/api/v1/me",
-                                "cart"
+                                "/cart",
+                                "/api/v1/orders/**"
                         ).authenticated()
                         .anyExchange().permitAll()
                 )
@@ -32,18 +35,7 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .oauth2Login(Customizer.withDefaults())
-                .logout(logout -> logout.logoutUrl("/logout"))
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                    .authenticationEntryPoint((exchange, exception) -> {
-                        if (exchange.getRequest().getPath().value().startsWith("/api/")) {
-                            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-                            return exchange.getResponse().setComplete();
-                        }
-                        return new org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint("/oauth2/authorization/auth")
-                                .commence(exchange, exception);
-                    })
-                )
-                .cors(ServerHttpSecurity.CorsSpec::disable)
+                .oauth2Client(Customizer.withDefaults())
                 .build();
     }
 
